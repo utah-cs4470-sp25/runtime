@@ -22,16 +22,35 @@ noreturn void fail(char *who, char *msg) {
   exit(127);
 }
 
-void jpl_main(long argnum, long *args);
+
+void *jpl_alloc(size_t size) {
+  if (size == 0) {
+    return 0;
+  } else {
+    void *mem = malloc(size);
+    if (!mem) {
+      printf("[abort] Could not allocate array");
+      exit(1);
+    }
+    return mem;
+  }
+}
+
+void *_jpl_alloc(size_t size) {
+  return jpl_alloc(size);
+}
+
+void jpl_main(struct args);
 
 int main(int argc, char **argv) {
   long argnum = argc - 1;
-  long *args = malloc(sizeof(long) * argnum);
+  long *argdata = jpl_alloc(sizeof(long) * argnum);
   for (int i = 1; i < argc; i++) {
     args[i] = strtol(argv[i], 0, 10);
     if (errno) fail("main", "Command line argument too large");
   }
-  jpl_main(argnum, args);
+  struct args args = { argnum, argdata };
+  jpl_main(args);
   return 0;
 }
 
@@ -299,9 +318,8 @@ void show_type(uint8_t t, void *data) {
   }
 }
 
-int32_t show(char *type_str, void *data) {
-  /* We expect that the second argument is a pointer to data, even if
-     that data is an integer or something like that. */
+void show(char *type_str, void *data) {
+  /*  */
   full_type_string = type_str;
   if (strnlen(type_str, 256) == 256) fail("show", "Type string is too long");
   mem.i = 0; // Allocate memory
@@ -313,7 +331,6 @@ int32_t show(char *type_str, void *data) {
   show_type(t, data);
   tprintf("\n");
   full_type_string = 0;
-  return 1;
 }
 
 int32_t _show(char *type_str, void *data) {
@@ -330,7 +347,8 @@ void _fail_assertion(char *s) {
 }
 
 void print(char *s) {
-  printf("%s", s);
+  int i = printf("%s", s);
+  if (i < 0) fail("print", "Failed to print")
 }
 
 void _print(char *s) {
@@ -364,19 +382,6 @@ void _write_image(struct pict input, char *filename) {
   write_image(input, filename);
 }
 
-void *jpl_alloc(size_t size) {
-  if (size == 0) {
-    return 0;
-  } else {
-    void *mem = malloc(size);
-    if (!mem) {
-      printf("[abort] Could not allocate array");
-      exit(1);
-    }
-    return mem;
-  }
-}
-
-void *_jpl_alloc(size_t size) {
-  return jpl_alloc(size);
+double _fmod(double x, double y) {
+  return fmod(x, y);
 }

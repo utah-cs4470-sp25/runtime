@@ -6,7 +6,7 @@ OFILES=$(patsubst %.c,%.o,$(CFILES))
 all: runtime.a
 
 %.o: %.c
-	clang -Og -Werror -Wall -Wpedantic -c -o $@ -- $^
+	$(CC) -Og -Werror -Wall -Wpedantic -c -o $@ -- $^
 
 runtime.a: $(OFILES)
 	ar rcs $@ $^
