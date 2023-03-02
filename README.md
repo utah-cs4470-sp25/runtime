@@ -165,3 +165,10 @@ In either function, if any error occurs, including permissions errors,
 file system errors, memory allocation errors, or decoding errors, this
 function will cleanly exit with some non-zero exit code. (It depends
 on the PNG library internals.)
+
+# Other functions
+
+The `builtins.c` file contains a number of other functions, including
+`sub_ints`, `sub_floats`, `has_size`, `sepia`, `blur`, `resize`, and
+`crop`. These are not necessary for JPL 2023, but have been used in
+prior classes and so the code for them is being kept around.
