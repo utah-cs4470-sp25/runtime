@@ -43,10 +43,15 @@ void *_jpl_alloc(int64_t size) {
 void jpl_main(struct args);
 
 int main(int argc, char **argv) {
-  long argnum = argc - 1;
-  long *argdata = jpl_alloc(sizeof(long) * argnum);
+  int64_t argnum = argc - 1;
+  // Can't overflow
+  int64_t *argdata = malloc(sizeof(int64_t) * argnum);
+  if (argnum && !argdata) {
+    printf("[abort] Could not allocate arguments array");
+    exit(1);
+  }
   for (int i = 1; i < argc; i++) {
-    args[i] = strtol(argv[i], 0, 10);
+    argdata[i] = strtol(argv[i], 0, 10);
     if (errno) fail("main", "Command line argument too large");
   }
   struct args args = { argnum, argdata };
