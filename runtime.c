@@ -356,10 +356,10 @@ void _show(char *type_str, void *data) {
 }
 
 void fail_assertion(char *s) {
-  printf("[abort] %s", s);
   if (getenv("JPLRTDEBUG")) {
     printf("[debug] fail_assertion(\"%s\")\n", s);
   }
+  printf("[abort] %s\n", s);
   exit(1);
 }
 
@@ -368,15 +368,27 @@ void _fail_assertion(char *s) {
 }
 
 void print(char *s) {
-  int i = printf("%s", s);
   if (getenv("JPLRTDEBUG")) {
     printf("[debug] print(\"%s\")\n", s);
   }
+  int i = printf("%s\n", s);
   if (i < 0) fail("print", "Failed to print");
 }
 
 void _print(char *s) {
   print(s);
+}
+
+void print_time(double d) {
+  if (getenv("JPLRTDEBUG")) {
+    printf("[debug] print(%g)\n", d);
+  }
+  int i = printf("[%.6fs]", d);
+  if (i < 0) fail("print_time", "Failed to print");
+}
+
+void _print_time(double d) {
+  print_time(d);
 }
 
 double get_time(void) {

@@ -19,6 +19,8 @@ double get_time(void);
 
 void show(char*, void*);
 void print(char*);
+void print_time(double);
+
 struct pict read_image(char*);
 void write_image(struct pict, char*);
 

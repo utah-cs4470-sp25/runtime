@@ -86,8 +86,10 @@ The `fail_assertion` method has the following signature:
     void fail_assertion(char *message)
 
 This method prints the error message to standard error and then exits
-with exit code 1. Your compiled code should call `fail_assertion` if
-any runtime error, like dividing by zero, occurs.
+with exit code 1. The argument to `fail_assertion` must be a pointer
+to a *null terminated* sequence of characters---a C string. The string
+*should not* contain a newline. Your compiled code should call
+`fail_assertion` if any runtime error, like dividing by zero, occurs.
 
 The `jpl_alloc` function has the following signature:
 
@@ -116,9 +118,14 @@ The `print` function prints to the screen:
 
     void print(char *message)
 
+The similar `print_time` function prints to the screen:
+
+    void print_time(double)
+
 The argument to `print` must be a pointer to a *null terminated*
-sequence of characters---a C string. If, for whatever reason, printing
-fails, the `print` function terminates cleanly with error code 127.
+sequence of characters---a C string. The string *should not* contain a
+newline. If, for whatever reason, printing fails, these functions
+terminate cleanly with error code 127.
 
 The `show` function has the following signature:
 
