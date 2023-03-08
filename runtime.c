@@ -148,9 +148,8 @@ uint8_t parse_tuple_type(char *type_str, char **new_type_str) {
     tuple_mem[i++] = parse_type(type_str, &type_str);
     skip_whitespace(type_str, &type_str);
   }
-  ensure_literal(")", type_str, &type_str, "Could not parse integer type");
+  ensure_literal(")", type_str, &type_str, "Could not parse tuple type");
 
-  type_str++;
   uint8_t t, p;
   p = t = getmem(1 + i);
   mem.data[t++] = i;
@@ -333,8 +332,8 @@ void show(char *type_str, void *data) {
   full_type_string = 0;
 }
 
-int32_t _show(char *type_str, void *data) {
-  return show(type_str, data);
+void _show(char *type_str, void *data) {
+  show(type_str, data);
 }
 
 void fail_assertion(char *s) {
