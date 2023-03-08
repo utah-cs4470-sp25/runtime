@@ -352,7 +352,7 @@ void _fail_assertion(char *s) {
 
 void print(char *s) {
   int i = printf("%s", s);
-  if (i < 0) fail("print", "Failed to print")
+  if (i < 0) fail("print", "Failed to print");
 }
 
 void _print(char *s) {
