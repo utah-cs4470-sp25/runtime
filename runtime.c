@@ -428,6 +428,43 @@ void _write_image(struct pict input, char *filename) {
   write_image(input, filename);
 }
 
-double _fmod(double x, double y) {
-  return fmod(x, y);
+int64_t to_int(double x) {
+  return (int64_t) x;
 }
+
+int64_t _to_int(double x) {
+  return to_int(x);
+}
+
+double to_float(int64_t x) {
+  return (double) x;
+}
+
+double _to_float(int64_t x) {
+  return to_float(x);
+}
+
+#define FORWARD1(name) \
+  double _##name(double x) { \
+    return name(x); \
+  }
+
+#define FORWARD2(name) \
+  double _##name(double x, double y) { \
+    return name(x, y); \
+  }
+
+FORWARD1(sqrt)
+FORWARD1(exp)
+FORWARD1(sin)
+FORWARD1(cos)
+FORWARD1(tan)
+FORWARD1(asin)
+FORWARD1(acos)
+FORWARD1(atan)
+FORWARD1(log)
+
+FORWARD2(fmod)
+FORWARD2(pow)
+FORWARD2(atan2)
+

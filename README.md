@@ -182,16 +182,32 @@ file system errors, memory allocation errors, or decoding errors, this
 function will cleanly exit with some non-zero exit code. (It depends
 on the PNG library internals.)
 
+# Conversion functions
+
+The `to_int` function converts an integer to a floating-point value:
+
+    int64_t to_int(double)
+    
+The `to_float` function converts back:
+
+    double to_float(int64_t)
+    
+The semantics (and implementation) are identical to C-style casts.
+
 # Platform support
 
 On macOS, the standard calling convention requires that all function
 names are prefixed with an underscore. However, on Linux, this is not
-required. So, a C function called `jpl_alloc` must be refered to as
-`jpl_alloc` on Linux and `_jpl_alloc` on macOS, if called from assembly.
+required. So, normally, a C function called `jpl_alloc` must be
+refered to as `jpl_alloc` on Linux and `_jpl_alloc` on macOS, if
+called from assembly.
 
 For this reason, the runtime provides every function described above
 both with and without an underscore. These do the same thing; the
 version with an underscore just calls the version without.
+
+Underscored versions of the math functions, such as `_fmod` and
+`_sin`, are provided as well.
 
 This way, when compiled on Linux, the runtime will provide both
 `jpl_alloc` and `_jpl_alloc`; if compiled on macOS, it will provide
