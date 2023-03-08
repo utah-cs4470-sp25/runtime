@@ -23,8 +23,8 @@ noreturn void fail(char *who, char *msg) {
 }
 
 
-void *jpl_alloc(size_t size) {
-  if (size == 0) {
+void *jpl_alloc(int64_t size) {
+  if (size <= 0) {
     return 0;
   } else {
     void *mem = malloc(size);
@@ -36,7 +36,7 @@ void *jpl_alloc(size_t size) {
   }
 }
 
-void *_jpl_alloc(size_t size) {
+void *_jpl_alloc(int64_t size) {
   return jpl_alloc(size);
 }
 

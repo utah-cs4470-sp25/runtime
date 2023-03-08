@@ -14,7 +14,7 @@ struct args {
 int main(int, char**);
 
 void fail_assertion(char*);
-void *jpl_alloc(size_t);
+void *jpl_alloc(int64_t);
 double get_time(void);
 
 void show(char*, void*);
