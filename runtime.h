@@ -9,7 +9,7 @@ struct pict {
 struct args {
   int64_t argnum;
   int64_t *data;
-}
+};
 
 int main(int, char**);
 
