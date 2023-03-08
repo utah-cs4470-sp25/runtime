@@ -51,6 +51,13 @@ computer, try `gcc` or `clang` instead. (You will not actually compile
 any C code; instead, `gcc` or `clang` will recognize that you've
 passed them a bunch of object files, and invoke the correct linker.)
 
+# Debugging
+
+If you set the environment variable `JPLRTDEBUG`, every public runtime
+function will print its arguments, as will the entry point before
+calling your `jpl_main` method. This can be helpful for debugging
+issues.
+
 # Main functions
 
 The runtime expects a single function to be available to it, with the

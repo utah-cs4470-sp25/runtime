@@ -24,6 +24,9 @@ noreturn void fail(char *who, char *msg) {
 
 
 void *jpl_alloc(int64_t size) {
+  if (getenv("JPLRTDEBUG")) {
+    printf("[debug] jpl_alloc(%lld)\n", size);
+  }
   if (size <= 0) {
     return 0;
   } else {
@@ -55,6 +58,13 @@ int main(int argc, char **argv) {
     if (errno) fail("main", "Command line argument too large");
   }
   struct args args = { argnum, argdata };
+  if (getenv("JPLRTDEBUG")) {
+    printf("[debug] calling jpl_main({%lld, [", argnum);
+    for (int i = 0; i < argnum; i++) {
+      printf("%lld, ", argdata[i]);
+    }
+    printf("]})\n");
+  }
   jpl_main(args);
   return 0;
 }
@@ -323,6 +333,10 @@ void show_type(uint8_t t, void *data) {
 }
 
 void show(char *type_str, void *data) {
+  if (getenv("JPLRTDEBUG")) {
+    printf("[debug] show(\"%s\", %p)\n", type_str, data);
+  }
+
   /*  */
   full_type_string = type_str;
   if (strnlen(type_str, 256) == 256) fail("show", "Type string is too long");
@@ -343,6 +357,9 @@ void _show(char *type_str, void *data) {
 
 void fail_assertion(char *s) {
   printf("[abort] %s", s);
+  if (getenv("JPLRTDEBUG")) {
+    printf("[debug] fail_assertion(\"%s\")\n", s);
+  }
   exit(1);
 }
 
@@ -352,6 +369,9 @@ void _fail_assertion(char *s) {
 
 void print(char *s) {
   int i = printf("%s", s);
+  if (getenv("JPLRTDEBUG")) {
+    printf("[debug] print(\"%s\")\n", s);
+  }
   if (i < 0) fail("print", "Failed to print");
 }
 
@@ -360,6 +380,9 @@ void _print(char *s) {
 }
 
 double get_time(void) {
+  if (getenv("JPLRTDEBUG")) {
+    printf("[debug] get_time()\n");
+  }
   clock_t c = clock();
   return ((double) c) / CLOCKS_PER_SEC;
 }
@@ -369,6 +392,9 @@ double _get_time(void) {
 }
 
 struct pict read_image(char *filename) {
+  if (getenv("JPLRTDEBUG")) {
+    printf("[debug] read_image(\"%s\")\n", filename);
+  }
   struct pict out;
   _readPNG(&out.rows, &out.cols, &out.data, filename);
   return out;
@@ -379,6 +405,10 @@ struct pict _read_image(char *filename) {
 }
 
 void write_image(struct pict input, char *filename) {
+  if (getenv("JPLRTDEBUG")) {
+    printf("[debug] write_image({%lld, %lld, %p}, \"%s\")\n", input.rows, input.cols, (void*)input.data, filename);
+  }
+
   _writePNG(input.rows, input.cols, input.data, filename);
 }
 
