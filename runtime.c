@@ -241,21 +241,21 @@ size_t size_type(uint8_t t) {
   int rank, fields, size;
   switch (mem.data[t]) {
   case BOOL:
-    return sizeof(int);
+    return sizeof(int64_t);
   case INT:
     return sizeof(int64_t);
   case FLOAT:
     return sizeof(double);
-  case NDARRAY:
-    return sizeof(int64_t) + sizeof(void *);
   case ARRAY:
+    return sizeof(int64_t) + sizeof(void *);
+  case NDARRAY:
     rank = (int) mem.data[t + 1];
     return rank * sizeof(int64_t) + sizeof(void *);
   default:
     fields = (int) mem.data[t];
     size = 0;
     for (int i = 0; i < fields; i++) {
-      size += size_type(mem.data[t + i]);
+      size += size_type(mem.data[t + i + 1]);
     }
     return size;
   }
