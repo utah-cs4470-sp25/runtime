@@ -67,6 +67,9 @@ int main(int argc, char **argv) {
     printf("]})\n");
   }
   jpl_main(args);
+  if (getenv("JPLRTDEBUG")) {
+    printf("[debug] jpl_main returned cleanly\n");
+  }
   return 0;
 }
 
