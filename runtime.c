@@ -278,6 +278,7 @@ void show_array(uint8_t subtype, int rank, uint64_t *data2) {
   for (int64_t i = 0; i < size; i++) {
     show_type(subtype, subdata + i * step);
     int64_t j = i + 1;
+    if (j == size) break;
     int rankstep = 0;
     while (j % data2[rank - rankstep - 1] == 0) {
       j /= data2[rank - rankstep - 1];
