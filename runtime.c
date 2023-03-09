@@ -32,7 +32,7 @@ void *jpl_alloc(int64_t size) {
   } else {
     void *mem = malloc(size);
     if (!mem) {
-      printf("[abort] Could not allocate array");
+      printf("[abort] Could not allocate array\n");
       exit(1);
     }
     return mem;
@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
   // Can't overflow
   int64_t *argdata = malloc(sizeof(int64_t) * argnum);
   if (argnum && !argdata) {
-    printf("[abort] Could not allocate arguments array");
+    printf("[abort] Could not allocate arguments array\n");
     exit(1);
   }
   for (int i = 1; i < argc; i++) {
@@ -383,7 +383,7 @@ void print_time(double d) {
   if (getenv("JPLRTDEBUG")) {
     printf("[debug] print(%g)\n", d);
   }
-  int i = printf("[%.6fs]", d);
+  int i = printf("[%.6fs]\n", d);
   if (i < 0) fail("print_time", "Failed to print");
 }
 
