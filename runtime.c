@@ -46,6 +46,7 @@ void *_jpl_alloc(int64_t size) {
 void jpl_main(struct args);
 
 int main(int argc, char **argv) {
+  setbuf(stdout, NULL);
   int64_t argnum = argc - 1;
   // Can't overflow
   int64_t *argdata = malloc(sizeof(int64_t) * argnum);
