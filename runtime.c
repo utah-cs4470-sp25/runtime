@@ -382,7 +382,7 @@ void print_time(double d) {
   if (getenv("JPLRTDEBUG")) {
     printf("[debug] print(%g)\n", d);
   }
-  int i = printf("[%.6fs]\n", d);
+  int i = printf("[time] %.6fms\n", d * 1000.0);
   if (i < 0) fail("print_time", "Failed to print");
 }
 
