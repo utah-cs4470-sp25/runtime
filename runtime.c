@@ -15,9 +15,9 @@ char *full_type_string = 0;
 
 noreturn void fail(char *who, char *msg) {
   if (full_type_string) {
-    fprintf(stderr, "[builtin %s] %s in '%s'\n", who, msg, full_type_string);
+    fprintf(stderr, "[abort] %s: %s in '%s'\n", who, msg, full_type_string);
   } else {
-    fprintf(stderr, "[builtin %s] %s\n", who, msg);
+    fprintf(stderr, "[abort] %s: %s\n", who, msg);
   }
   exit(127);
 }
@@ -31,10 +31,7 @@ void *jpl_alloc(int64_t size) {
     return 0;
   } else {
     void *mem = malloc(size);
-    if (!mem) {
-      printf("[abort] Could not allocate array\n");
-      exit(1);
-    }
+    if (!mem) fail("jpl_alloc", "Could not allocate array memory");
     return mem;
   }
 }
@@ -50,10 +47,7 @@ int main(int argc, char **argv) {
   int64_t argnum = argc - 1;
   // Can't overflow
   int64_t *argdata = malloc(sizeof(int64_t) * argnum);
-  if (argnum && !argdata) {
-    printf("[abort] Could not allocate arguments array\n");
-    exit(1);
-  }
+  if (argnum && !argdata) fail("main", "Could not allocate memory for arguments");
   for (int i = 1; i < argc; i++) {
     argdata[i] = strtol(argv[i], 0, 10);
     if (errno) fail("main", "Command line argument too large");
