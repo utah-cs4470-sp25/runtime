@@ -95,11 +95,12 @@ The `jpl_alloc` function has the following signature:
 
     void *jpl_alloc(int64_t bytes)
 
-It wraps the standard `malloc` method and checks for errors. If
-`malloc` fails to allocate memory, it cleanly exits the program, with
-exit code 1. If `0` or fewer bytes are requested, it always returns
-the null pointer. Note that its argument is a _signed_ 64-bit integer,
-even though `malloc` normally takes an unsigned argument. This is for
+It wraps the standard `malloc` method and checks for errors. The
+newly-allocated memory is zeroed. If `malloc` fails to allocate
+memory, it cleanly exits the program, with exit code 1. If `0` or
+fewer bytes are requested, also cleanly exits the program, with error
+code 1. Note that its argument is a _signed_ 64-bit integer, even
+though `malloc` normally takes an unsigned argument. This is for
 uniformity.
 
 The `get_time` function has the following signature:

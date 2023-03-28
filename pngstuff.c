@@ -22,7 +22,7 @@
 /*************** adapted from http://zarb.org/~gc/html/libpng.html *****************/
 
 static void abort_(const char *s, ...) {
-  printf("Fatal error: ");
+  printf("[abort] ");
   va_list args;
   va_start(args, s);
   vfprintf(stdout, s, args);
@@ -39,7 +39,7 @@ static void write_png_file(const char *file_name, int width, int height,
   /* create file */
   FILE *fp = fopen(file_name, "wb");
   if (!fp)
-    abort_("[write_png_file] File %s could not be opened for writing",
+    abort_("write_png_file: File %s could not be opened for writing",
            file_name);
 
   /* initialize stuff */
@@ -47,20 +47,20 @@ static void write_png_file(const char *file_name, int width, int height,
       png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
   if (!png_ptr)
-    abort_("[write_png_file] png_create_write_struct failed");
+    abort_("write_png_file: png_create_write_struct failed");
 
   png_infop info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
-    abort_("[write_png_file] png_create_info_struct failed");
+    abort_("write_png_file: png_create_info_struct failed");
 
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[write_png_file] Error during init_io");
+    abort_("write_png_file: Error during init_io");
 
   png_init_io(png_ptr, fp);
 
   /* write header */
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[write_png_file] Error during writing header");
+    abort_("write_png_file: Error during writing header");
 
   png_set_IHDR(png_ptr, info_ptr, width, height, bit_depth, color_type,
                PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE,
@@ -70,13 +70,13 @@ static void write_png_file(const char *file_name, int width, int height,
 
   /* write bytes */
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[write_png_file] Error during writing bytes");
+    abort_("write_png_file: Error during writing bytes");
 
   png_write_image(png_ptr, row_pointers);
 
   /* end write */
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[write_png_file] Error during end of write");
+    abort_("write_png_file: Error during end of write");
 
   png_write_end(png_ptr, NULL);
 
@@ -90,25 +90,25 @@ static void read_png_file(const char *file_name, uint64_t *_width, uint64_t *_he
   /* open file and test for it being a png */
   FILE *fp = fopen(file_name, "rb");
   if (!fp)
-    abort_("[read_png_file] File %s could not be opened for reading",
+    abort_("read_png_file: File %s could not be opened for reading",
            file_name);
   fread(header, 1, 8, fp);
   if (png_sig_cmp(header, 0, 8))
-    abort_("[read_png_file] File %s is not recognized as a PNG file",
+    abort_("read_png_file: File %s is not recognized as a PNG file",
            file_name);
 
   /* initialize stuff */
   png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
   if (!png_ptr)
-    abort_("[read_png_file] png_create_read_struct failed");
+    abort_("read_png_file: png_create_read_struct failed");
 
   png_infop info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
-    abort_("[read_png_file] png_create_info_struct failed");
+    abort_("read_png_file: png_create_info_struct failed");
 
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[read_png_file] Error during init_io");
+    abort_("read_png_file: Error during init_io");
 
   png_init_io(png_ptr, fp);
   png_set_sig_bytes(png_ptr, 8);
@@ -121,7 +121,7 @@ static void read_png_file(const char *file_name, uint64_t *_width, uint64_t *_he
   png_byte bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 
   if (bit_depth != 8)
-    abort_("[read_png_file] Unsupported png type, color channels must be 8 bits");
+    abort_("read_png_file: Unsupported png type, color channels must be 8 bits");
   
   if (color_type == PNG_COLOR_TYPE_RGB) {
     *alpha = 0;
@@ -129,7 +129,7 @@ static void read_png_file(const char *file_name, uint64_t *_width, uint64_t *_he
     *alpha = 1;
   } else {
     printf("got color_type = %d\n", color_type);
-    abort_("[read_png_file] Unsupported png type, must be SRBG or SRGBA");
+    abort_("read_png_file: Unsupported png type, must be SRBG or SRGBA");
   }
 
   png_set_interlace_handling(png_ptr);
@@ -137,7 +137,7 @@ static void read_png_file(const char *file_name, uint64_t *_width, uint64_t *_he
 
   /* read file */
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[read_png_file] Error during read_image");
+    abort_("read_png_file: Error during read_image");
 
   png_bytep *row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * height);
   for (int y = 0; y < height; y++)

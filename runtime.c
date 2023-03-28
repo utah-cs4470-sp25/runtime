@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include <limits.h>
 #include <stdnoreturn.h>
 #include <errno.h>
 
@@ -28,9 +29,10 @@ void *jpl_alloc(int64_t size) {
     printf("[debug] jpl_alloc(%lld)\n", size);
   }
   if (size <= 0) {
-    return 0;
+    fail("jpl_alloc", "Could not allocate 0 or negative amount of memory");
   } else {
     void *mem = malloc(size);
+    memset(mem, 0, size);
     if (!mem) fail("jpl_alloc", "Could not allocate array memory");
     return mem;
   }
@@ -40,7 +42,20 @@ void *_jpl_alloc(int64_t size) {
   return jpl_alloc(size);
 }
 
-void jpl_main(struct args);
+/* Note that this isn't the struct args that the documentation
+   describes: it has 24 bytes of zeros padded at the end. The reason
+   for this is to make it so large that it gets passed on the stack,
+   in keeping with the JPL ABI, which is simplified compared to the
+   x86_64 Linux ABI. */
+struct actual_args {
+  int64_t argnum;
+  int64_t *data;
+  int64_t pad1;
+  int64_t pad2;
+  int64_t pad3;
+};
+
+void jpl_main(struct actual_args);
 
 int main(int argc, char **argv) {
   setbuf(stdout, NULL);
@@ -52,7 +67,7 @@ int main(int argc, char **argv) {
     argdata[i] = strtol(argv[i], 0, 10);
     if (errno) fail("main", "Command line argument too large");
   }
-  struct args args = { argnum, argdata };
+  struct actual_args args = { argnum, argdata, 0, 0, 0 };
   if (getenv("JPLRTDEBUG")) {
     printf("[debug] calling jpl_main({%lld, [", argnum);
     for (int i = 0; i < argnum; i++) {
@@ -428,6 +443,9 @@ void _write_image(struct pict input, char *filename) {
 }
 
 int64_t to_int(double x) {
+  if (isnan(x)) return 0;
+  if (isinf(x) && x > 0.0) return LLONG_MAX;
+  if (isinf(x) && x < 0.0) return LLONG_MIN;
   return (int64_t) x;
 }
 
