@@ -13,43 +13,57 @@ by running:
 
     make
 
-This should produce a file called `runtime.a`. This "object archive"
-file is simply a single file containing multiple object files. If
-you'd like to change what C compile is used to do the compilation, you
-can pass the `CC` variable to `make`:
+This downloads `libpng`, our PNG library, builds that, then builds the
+JPL runtime, producing a file called `runtime.a`. This "object
+archive" file is simply a single file containing multiple object
+files.
+
+Note that the runtime and `libpng` are both compiled for x86-64, even
+if you have an ARM computer. This is because JPL only compiles to
+x86-64.
+
+If you'd like to change what C compiler is used to do the compilation,
+you can pass the `CC` variable to `make`:
 
     make CC=clang
-    
+
 The default compiler is system-specific.
+
+On macOS you may see warnings like this:
+
+    /Library/Developer/CommandLineTools/usr/bin/ranlib: file: runtime.a(arm_init.o) has no symbols
+
+You can ignore them.
+
+# Linking against the runtime
 
 Once you have the runtime compiled, you can link it against a JPL
 object file `program.o` with the following invocation:
 
-    ld program.o <runtime directory>/runtime.a -lpng -lm -o program
-    
-In detail, we are asking the linker, called `ld`, to link together
+    clang -arch x86_64 program.o <runtime directory>/runtime.a -lz -lm -o program
+
+In detail, we are asking the linker, here `clang`, to link together
 four sets of object files:
 
  - The JPL object file `program.o`, which you presumbly got by
    compiling a JPL program and then assembling the resulting assembly;
  - The `runtime.a` file you got by compiling this runtime;
- - The LibPNG library for reading PNG files, which you'll need to
-   install. The linker finds it in standard system-wide paths. If you
-   instead download LibPNG and compile it yourself, you'd need to pass
-   `-L<path to libpng.o>` to `ld`, before the `-lpng` argument.
+ - The ZLib compression library used for reading PNG files, which you'll need to
+   install. The linker finds it in standard system-wide paths.
  - The math library (what in C is called `math.h`), which is called
    LibM.
  
 Make sure to pass the linker arguments in exactly this order, because
 the linker resolves references left to right. For example, if you put
-`-lpng` before `runtime.a`, then when the linker goes to resolve
-references to PNG functions, it won't yet have seen the ones inside
+`-lz` before `runtime.a`, then when the linker goes to resolve
+references to Zlib functions, it won't yet have seen the ones inside
 `runtime.a`.
     
-Any linker should work fine. If you do not have an `ld` on your
-computer, try `gcc` or `clang` instead. (You will not actually compile
-any C code; instead, `gcc` or `clang` will recognize that you've
-passed them a bunch of object files, and invoke the correct linker.)
+Here we use `clang` only as a linker. You do not actually compile any
+C code; instead `clang` recognizes that you've passed them a bunch of
+object files, and invoke the correct linker with the default flags. If
+you'd like, you can call `ld` directly, you'll just need to pass
+explicit paths to Zlib and LibM.
 
 # Debugging
 

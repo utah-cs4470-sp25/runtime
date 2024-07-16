@@ -24,3 +24,5 @@ void print_time(double);
 struct pict read_image(char*);
 void write_image(struct pict, char*);
 
+int64_t to_int(double);
+double to_float(int64_t);
