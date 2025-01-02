@@ -20,6 +20,7 @@ $(LIBPNG)/configure:
 $(LIBPNG)/target/include/png.h: $(LIBPNG)/configure
 	# Only pass -arch flags for macOS, otherwise omit them for Ubuntu
 	ARCH_FLAGS=""
+	# Corrected ifeq syntax
 	ifeq ($(shell uname), Darwin)
 		ARCH_FLAGS="-arch x86_64"
 	endif
