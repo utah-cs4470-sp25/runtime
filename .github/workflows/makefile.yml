@@ -9,5 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
     - run: make
+    - name: Handle failure
+      if: failure()
+      run: cat libpng-1.6.43/config.log
