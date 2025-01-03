@@ -11,7 +11,7 @@ $(LIBPNG)/configure:
 	curl -L https://download.sourceforge.net/libpng/$(LIBPNG).tar.xz | tar -xJ
 
 $(LIBPNG)/target/include/png.h: $(LIBPNG)/configure
-	(cd libpng-1.6.43 && LDFLAGS="-arch x86_64" CPPFLAGS="-arch x86_64" ./configure --prefix $(PWD)/$(LIBPNG)/target)
+	(cd libpng-1.6.43 && LDFLAGS="" CPPFLAGS="" ./configure --prefix $(PWD)/$(LIBPNG)/target)
 	$(MAKE) -C $(LIBPNG) install
 
 %.o: %.c $(LIBPNG)/target/include/png.h
