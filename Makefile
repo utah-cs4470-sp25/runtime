@@ -5,7 +5,7 @@ OFILES=$(patsubst %.c,%.o,$(CFILES))
 
 LIBPNG=libpng-1.6.43
 
-CC=clang
+CC=gcc
 
 all: runtime.a
 
