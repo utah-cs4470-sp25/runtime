@@ -5,19 +5,25 @@ OFILES=$(patsubst %.c,%.o,$(CFILES))
 
 LIBPNG=libpng-1.6.43
 
+CC=clang
+
 all: runtime.a
 
 $(LIBPNG)/configure:
+	@echo "Downloading LibPNG\n"
 	curl -L https://download.sourceforge.net/libpng/$(LIBPNG).tar.xz | tar -xJ
 
 $(LIBPNG)/target/include/png.h: $(LIBPNG)/configure
-	(cd libpng-1.6.43 && LDFLAGS="" CPPFLAGS="" ./configure --prefix $(PWD)/$(LIBPNG)/target)
+	@echo "\nCompiling LibPNG\n"
+	(cd libpng-1.6.43 && CC=$(CC) LDFLAGS="" CPPFLAGS="" ./configure --prefix $(PWD)/$(LIBPNG)/target)
 	$(MAKE) -C $(LIBPNG) install
 
 %.o: %.c $(LIBPNG)/target/include/png.h
-	gcc -I$(LIBPNG)/target/include -Og -Werror -Wall -Wpedantic -c -o $@ $<
+	@echo "\nCompiling RunTime\n"
+	$(CC) -I$(LIBPNG)/target/include -Og -Werror -Wall -Wpedantic -c -o $@ $<
 
 runtime.a: $(OFILES) $(LIBPNG)/target/lib/libpng16.a
+	@echo "\nLinking RunTime\n"
 	cp $(LIBPNG)/target/lib/libpng16.a $@
 	ar rcs $@ $(OFILES)
 
