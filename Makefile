@@ -15,7 +15,7 @@ $(LIBPNG)/target/include/png.h: $(LIBPNG)/configure
 	$(MAKE) -C $(LIBPNG) install
 
 %.o: %.c $(LIBPNG)/target/include/png.h
-	$(CC) -arch x86_64 -I$(LIBPNG)/target/include -Og -Werror -Wall -Wpedantic -c -o $@ -- $<
+	gcc -arch x86_64 -I$(LIBPNG)/target/include -Og -Werror -Wall -Wpedantic -c -o $@ $<
 
 runtime.a: $(OFILES) $(LIBPNG)/target/lib/libpng16.a
 	cp $(LIBPNG)/target/lib/libpng16.a $@
