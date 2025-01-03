@@ -2,9 +2,11 @@ name: Makefile CI
 
 on: workflow_dispatch
 
+env:
+  CC: clang
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
