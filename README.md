@@ -6,6 +6,9 @@ This repository contains the JPL runtime library (currently for the
 functions that JPL programs can use. It is written in standard C and
 is intended to be compiled by a standard C compiler (probably Clang).
 
+> [!IMPORTANT]
+> Make sure you are on the `linux` branch if you are compiling the runtime on linux!
+
 # Dependencies and Compiling
 
 You should be able to compile the JPL runtime on your machine simply
