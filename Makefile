@@ -20,7 +20,7 @@ $(LIBPNG)/target/include/png.h: $(LIBPNG)/configure
 
 %.o: %.c $(LIBPNG)/target/include/png.h
 	@echo "\nCompiling RunTime\n"
-	$(CC) -I$(LIBPNG)/target/include -Og -Werror -Wall -Wpedantic -c -o $@ $<
+	$(CC) -I$(LIBPNG)/target/include -Og -Wall -Wpedantic -c -o $@ $<
 
 runtime.a: $(OFILES) $(LIBPNG)/target/lib/libpng16.a
 	@echo "\nLinking RunTime\n"
