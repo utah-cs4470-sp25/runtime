@@ -16,7 +16,7 @@ $(LIBPNG)/target/include/png.h: $(LIBPNG)/configure
 	$(MAKE) -C $(LIBPNG) install
 
 %.o: %.c $(LIBPNG)/target/include/png.h
-	$(CC) $(ARCH) -I$(LIBPNG)/target/include -Og -Wno-unused-result -Wno-format -Werror -Wall -Wpedantic -c -o $@ $<
+	$(CC) $(ARCH) -I$(LIBPNG)/target/include -Og -Wno-unused-result -Werror=format= -Werror -Wall -Wpedantic -c -o $@ $<
 
 runtime.a: $(OFILES) $(LIBPNG)/target/lib/libpng16.a
 	cp $(LIBPNG)/target/lib/libpng16.a $@
