@@ -7,7 +7,7 @@ struct pict {
 };
 
 struct args {
-  int64_t argnum;
+  int64_t d0;
   int64_t *data;
 };
 

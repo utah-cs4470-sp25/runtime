@@ -48,7 +48,7 @@ void *_jpl_alloc(int64_t size) {
    in keeping with the JPL ABI, which is simplified compared to the
    x86_64 Linux ABI. */
 struct actual_args {
-  int64_t argnum;
+  int64_t d0;
   int64_t *data;
   int64_t pad1;
   int64_t pad2;
@@ -320,6 +320,9 @@ void show_array(uint8_t subtype, int rank, uint64_t *data2) {
 
 void show_type(uint8_t t, void *data) {
   switch (mem.data[t]) {
+  case VOID:
+    tprintf("void");
+    return;
   case BOOL:
     if (*(int32_t*)data) {
       tprintf("true");
