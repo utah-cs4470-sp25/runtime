@@ -109,6 +109,7 @@ void tprintf(const char *fmt, ...) {
 // Types are:
 enum BType {
   TUPLE = 0,
+  VOID = 250,
   BOOL = 251,
   INT = 252,
   FLOAT = 253,
@@ -131,6 +132,17 @@ void ensure_literal(char *literal, char *type_str, char**new_type_str, char *err
 uint8_t parse_type(char *type_str, char **new_type_str);
 size_t size_type(uint8_t t);
 void show_type(uint8_t t, void *data);
+
+uint8_t parse_void_type(char *type_str, char **new_type_str) {
+  ensure_literal("VoidType", type_str, &type_str, "Could not parse void type");
+  skip_whitespace(type_str, &type_str);
+  ensure_literal(")", type_str, &type_str, "Could not parse void type");
+
+  uint8_t t = getmem(1);
+  mem.data[t] = VOID;
+  *new_type_str = type_str;
+  return t;
+}
 
 uint8_t parse_bool_type(char *type_str, char **new_type_str) {
   ensure_literal("BoolType", type_str, &type_str, "Could not parse boolean type");
@@ -172,7 +184,7 @@ uint8_t parse_tuple_type(char *type_str, char **new_type_str) {
   uint8_t tuple_mem[256];
   size_t i = 0;
   while (*type_str != ')') {
-    if (i >= BOOL) fail("show", "Tuple has too many fields");
+    if (i >= VOID) fail("show", "Tuple has too many fields");
     tuple_mem[i++] = parse_type(type_str, &type_str);
     skip_whitespace(type_str, &type_str);
   }
@@ -241,7 +253,8 @@ uint8_t parse_type(char *type_str, char **new_type_str) {
     t = parse_array_type(type_str, &type_str);
     break;
   case 'V':
-    fail("show", "Could not parse type; is that a VarType?");
+    t = parse_void_type(type_str, &type_str);
+    break;
   default:
     fail("show", "Could not parse type");
   }
