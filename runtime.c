@@ -434,28 +434,28 @@ double _get_time(void) {
   return get_time();
 }
 
-struct pict read_image(char *filename) {
+_a2_rgba read_image(char *filename) {
   if (getenv("JPLRTDEBUG")) {
     printf("[debug] read_image(\"%s\")\n", filename);
   }
-  struct pict out;
-  _readPNG(&out.rows, &out.cols, &out.data, filename);
+  _a2_rgba out;
+  _readPNG(&out.d0, &out.d1, (double**)&out.data, filename);
   return out;
 }
 
-struct pict _read_image(char *filename) {
+_a2_rgba _read_image(char *filename) {
   return read_image(filename);
 }
 
-void write_image(struct pict input, char *filename) {
+void write_image(_a2_rgba input, char *filename) {
   if (getenv("JPLRTDEBUG")) {
-    printf("[debug] write_image({%lld, %lld, %p}, \"%s\")\n", input.rows, input.cols, (void*)input.data, filename);
+    printf("[debug] write_image({%lld, %lld, %p}, \"%s\")\n", input.d0, input.d1, (void*)input.data, filename);
   }
 
-  _writePNG(input.rows, input.cols, input.data, filename);
+  _writePNG(input.d0, input.d1, (double*)input.data, filename);
 }
 
-void _write_image(struct pict input, char *filename) {
+void _write_image(_a2_rgba input, char *filename) {
   write_image(input, filename);
 }
 
