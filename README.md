@@ -239,7 +239,3 @@ The `runtime.c` file contains all of the functions described above.
 The `pngstuff.c` contains the bulk of the PNG reading and writing
 code.
 
-The `builtins.c` file contains a number of other functions, including
-`sub_ints`, `sub_floats`, `has_size`, `sepia`, `blur`, `resize`, and
-`crop`. These are not necessary for JPL 2023, but have been used in
-prior classes and so the code for them is being kept around.
