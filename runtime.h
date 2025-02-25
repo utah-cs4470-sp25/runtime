@@ -1,6 +1,5 @@
 #include <stdint.h>
 
-typedef struct { } void_t;
 typedef struct {
   double r;
   double g;
