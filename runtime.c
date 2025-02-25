@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -324,7 +325,7 @@ void show_type(uint8_t t, void *data) {
     tprintf("void");
     return;
   case BOOL:
-    if (*(int32_t*)data) {
+    if (*(bool*)data) {
       tprintf("true");
     } else {
       tprintf("false");
