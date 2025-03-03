@@ -1,13 +1,20 @@
 #include <stdint.h>
 
-struct pict {
-  int64_t rows;
-  int64_t cols;
-  double *data;
-};
+typedef struct {
+  double r;
+  double g;
+  double b;
+  double a;
+} rgba;
+
+typedef struct {
+  int64_t d0;
+  int64_t d1;
+  rgba *data;
+} _a2_rgba;
 
 struct args {
-  int64_t argnum;
+  int64_t d0;
   int64_t *data;
 };
 
@@ -21,8 +28,8 @@ void show(char*, void*);
 void print(char*);
 void print_time(double);
 
-struct pict read_image(char*);
-void write_image(struct pict, char*);
+_a2_rgba read_image(char*);
+void write_image(_a2_rgba, char*);
 
 int64_t to_int(double);
 double to_float(int64_t);

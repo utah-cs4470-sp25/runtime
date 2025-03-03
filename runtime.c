@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,7 +49,7 @@ void *_jpl_alloc(int64_t size) {
    in keeping with the JPL ABI, which is simplified compared to the
    x86_64 Linux ABI. */
 struct actual_args {
-  int64_t argnum;
+  int64_t d0;
   int64_t *data;
   int64_t pad1;
   int64_t pad2;
@@ -109,6 +110,7 @@ void tprintf(const char *fmt, ...) {
 // Types are:
 enum BType {
   TUPLE = 0,
+  VOID = 250,
   BOOL = 251,
   INT = 252,
   FLOAT = 253,
@@ -131,6 +133,17 @@ void ensure_literal(char *literal, char *type_str, char**new_type_str, char *err
 uint8_t parse_type(char *type_str, char **new_type_str);
 size_t size_type(uint8_t t);
 void show_type(uint8_t t, void *data);
+
+uint8_t parse_void_type(char *type_str, char **new_type_str) {
+  ensure_literal("VoidType", type_str, &type_str, "Could not parse void type");
+  skip_whitespace(type_str, &type_str);
+  ensure_literal(")", type_str, &type_str, "Could not parse void type");
+
+  uint8_t t = getmem(1);
+  mem.data[t] = VOID;
+  *new_type_str = type_str;
+  return t;
+}
 
 uint8_t parse_bool_type(char *type_str, char **new_type_str) {
   ensure_literal("BoolType", type_str, &type_str, "Could not parse boolean type");
@@ -172,7 +185,7 @@ uint8_t parse_tuple_type(char *type_str, char **new_type_str) {
   uint8_t tuple_mem[256];
   size_t i = 0;
   while (*type_str != ')') {
-    if (i >= BOOL) fail("show", "Tuple has too many fields");
+    if (i >= VOID) fail("show", "Tuple has too many fields");
     tuple_mem[i++] = parse_type(type_str, &type_str);
     skip_whitespace(type_str, &type_str);
   }
@@ -241,7 +254,8 @@ uint8_t parse_type(char *type_str, char **new_type_str) {
     t = parse_array_type(type_str, &type_str);
     break;
   case 'V':
-    fail("show", "Could not parse type; is that a VarType?");
+    t = parse_void_type(type_str, &type_str);
+    break;
   default:
     fail("show", "Could not parse type");
   }
@@ -307,8 +321,11 @@ void show_array(uint8_t subtype, int rank, uint64_t *data2) {
 
 void show_type(uint8_t t, void *data) {
   switch (mem.data[t]) {
+  case VOID:
+    tprintf("void");
+    return;
   case BOOL:
-    if (*(int32_t*)data) {
+    if (*(bool*)data) {
       tprintf("true");
     } else {
       tprintf("false");
@@ -417,28 +434,28 @@ double _get_time(void) {
   return get_time();
 }
 
-struct pict read_image(char *filename) {
+_a2_rgba read_image(char *filename) {
   if (getenv("JPLRTDEBUG")) {
     printf("[debug] read_image(\"%s\")\n", filename);
   }
-  struct pict out;
-  _readPNG(&out.rows, &out.cols, &out.data, filename);
+  _a2_rgba out;
+  _readPNG(&out.d0, &out.d1, (double**)&out.data, filename);
   return out;
 }
 
-struct pict _read_image(char *filename) {
+_a2_rgba _read_image(char *filename) {
   return read_image(filename);
 }
 
-void write_image(struct pict input, char *filename) {
+void write_image(_a2_rgba input, char *filename) {
   if (getenv("JPLRTDEBUG")) {
-    printf("[debug] write_image({%lld, %lld, %p}, \"%s\")\n", input.rows, input.cols, (void*)input.data, filename);
+    printf("[debug] write_image({%lld, %lld, %p}, \"%s\")\n", input.d0, input.d1, (void*)input.data, filename);
   }
 
-  _writePNG(input.rows, input.cols, input.data, filename);
+  _writePNG(input.d0, input.d1, (double*)input.data, filename);
 }
 
-void _write_image(struct pict input, char *filename) {
+void _write_image(_a2_rgba input, char *filename) {
   write_image(input, filename);
 }
 
@@ -484,4 +501,3 @@ FORWARD1(log)
 FORWARD2(fmod)
 FORWARD2(pow)
 FORWARD2(atan2)
-
