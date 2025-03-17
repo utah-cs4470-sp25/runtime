@@ -2,7 +2,7 @@ JPL Runtime Library
 ===================
 
 This repository contains the JPL runtime library (currently for the
-2023 edition of JPL). The JPL runtime provides a collection of
+2025 edition of JPL). The JPL runtime provides a collection of
 functions that JPL programs can use. It is written in standard C and
 is intended to be compiled by a standard C compiler (probably Clang).
 
