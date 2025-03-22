@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
   int64_t *argdata = malloc(sizeof(int64_t) * argnum);
   if (argnum && !argdata) fail("main", "Could not allocate memory for arguments");
   for (int i = 1; i < argc; i++) {
-    argdata[i] = strtol(argv[i], 0, 10);
+    argdata[i - 1] = strtol(argv[i], 0, 10);
     if (errno) fail("main", "Command line argument too large");
   }
   struct actual_args args = { argnum, argdata, 0, 0, 0 };
